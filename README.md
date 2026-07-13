@@ -1,38 +1,48 @@
-# MSCS532_Assignment5
+# MSCS532 Course Project: Social Network Influence Analysis
 
-Quicksort: Implementation, Analysis, and Randomization
+Proof of concept implementation for detecting influential users in a
+directed social network. Built for MSCS 532 (Algorithms and Data
+Structures), University of the Cumberlands.
+
+## Data Structures
+
+- **Adjacency list** (dict of sets): the directed follow graph, mirrored
+  in both directions so follower and following lookups are both O(1)
+- **Hash table** (dict): user ID to profile object mapping
+- **Max-heap** (heapq with negated keys): top-k influencer ranking in
+  O(n + k log n)
 
 ## Files
 
-- `quicksort.py` - deterministic Quicksort (Lomuto partition, last element as pivot)
-- `randomized_quicksort.py` - randomized Quicksort (pivot chosen uniformly at random)
-- `benchmark.py` - times both versions on random, sorted, and reverse-sorted inputs
-- `Assignment5_Report.docx` - full report with design choices, complexity analysis, and results
+| File | Purpose |
+|------|---------|
+| `social_graph.py` | Core `SocialGraph` class and `Profile` container |
+| `test_social_graph.py` | 18 unit tests (user management, edges, analysis) |
+| `demo.py` | Two-part demonstration: hand-built network + 5,000-user synthetic network with timing |
 
-## How to Run
+## Running
 
-Requires Python 3. No external libraries needed.
+No dependencies beyond the Python standard library (3.8+).
 
-Test the deterministic version:
+```bash
+# Run the test suite
+python3 -m unittest test_social_graph -v
 
-```
-python3 quicksort.py
-```
-
-Test the randomized version:
-
-```
-python3 randomized_quicksort.py
+# Run the demonstration
+python3 demo.py
 ```
 
-Run the full benchmark (takes about 30 seconds because of the deterministic worst cases):
+## Phase 2 Baseline Numbers
 
-```
-python3 benchmark.py
-```
+On the test machine, the synthetic network (5,000 users, 87,288 edges,
+seed fixed at 42):
 
-## Summary of Findings
+- Build time: ~0.7 s
+- Top-10 ranking: < 7 ms
+- 2-hop BFS from a mid-ranked user: < 1 ms (213 users reached)
 
-On random inputs both versions run in O(n log n) time and the deterministic version is slightly faster since it skips the random pivot selection overhead. On sorted and reverse-sorted inputs the deterministic version degrades to O(n^2) because the last-element pivot always produces the most unbalanced split possible. At 10,000 elements, sorted input took the deterministic version about 4,636 ms while the randomized version finished in about 17 ms. Doubling the input size roughly quadrupled the deterministic version's time on sorted input, matching the quadratic prediction. Randomization does not improve the worst-case bound, but it makes the worst case depend on the algorithm's own random choices instead of the input's arrangement, so no specific input can reliably trigger it. The expected running time of the randomized version is O(n log n) on every input.
+These serve as the baseline for Phase 3 optimization comparisons.
 
-Note: both scripts raise Python's recursion limit because the deterministic version's recursion depth equals the array length on sorted inputs, which exceeds Python's default limit of 1,000.
+## Author
+
+Frenie Labrador
